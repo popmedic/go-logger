@@ -1,29 +1,10 @@
-# log
-
-Package log provides a thread safe multi-tiered logger used to log output to a io.Writer.
-The different tiers are (least to highest piority):
-
-1. Info
-2. Debug
-3. Warn
-4. Error
-5. Fatal
-
-One can set the output, output format, and output time format. One can also set the tags, and colors for tags for each tier.
-
-Convenience functions are given to print a line or formated line to log for each tier.
-
-Example
-
-``` golang
-
 package examples
 
 import (
 	"os"
 
-	"github.com/popmedic/log"
-	"github.com/popmedic/log/colors/tty"
+	"github.com/popmedic/go-logger/log"
+	"github.com/popmedic/go-logger/log/colors/tty"
 )
 
 // Run1 runs the first example
@@ -71,8 +52,3 @@ func Run1() {
 	log.Error("a", "test")
 	log.Fatal(os.Exit, "good bye")
 }
-
-```
-### **Output**
-
-![alt text](Screen-Shot.png "Logo Title Text 1")
