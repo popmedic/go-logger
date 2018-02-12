@@ -22,8 +22,8 @@ package examples
 import (
 	"os"
 
-	"github.com/popmedic/log"
-	"github.com/popmedic/log/colors/tty"
+	"github.com/popmedic/go-logger/log"
+	"github.com/popmedic/go-logger/log/colors/tty"
 )
 
 // Run1 runs the first example
