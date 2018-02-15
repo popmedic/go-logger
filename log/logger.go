@@ -15,7 +15,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/popmedic/go-logger/log/colors/tty"
+	"github.com/popmedic/go-color/colorize/tty"
 )
 
 const invaledTimeFormatFmt = "%q is does not contain needed key words \"{TAG}\", \"{TIME}\", and \"{MSG}\""
@@ -44,50 +44,45 @@ const (
 var (
 	defaultOut = os.Stdout
 
-	defaultInfoColor     = tty.Reset.String()
-	defaultInfoColorEnd  = tty.Reset.String()
-	defaultDebugColor    = tty.FgGreen.String()
-	defaultDebugColorEnd = tty.Reset.String()
-	defaultWarnColor     = tty.FgYellow.String()
-	defaultWarnColorEnd  = tty.Reset.String()
-	defaultErrorColor    = tty.FgRed.String()
-	defaultErrorColorEnd = tty.Reset.String()
-	defaultFatalColor    = tty.BgRed.String()
-	defaultFatalColorEnd = tty.Reset.String()
+	defaultInfoColor  = tty.Reset()
+	defaultDebugColor = tty.FgGreen()
+	defaultWarnColor  = tty.FgYellow()
+	defaultErrorColor = tty.FgRed()
+	defaultFatalColor = tty.BgRed().Add(tty.FgHiWhite())
 )
 
 var (
 	tiers = []ITier{
 		NewTier(
-			NewColor(defaultInfoColor, defaultInfoColorEnd),
+			defaultInfoColor,
 			NewTag(defaultInfoTag),
 			NewFormat(defaultFormat),
 			NewTimeFormat(defaultTimeFormat),
 			defaultOut,
 		),
 		NewTier(
-			NewColor(defaultDebugColor, defaultDebugColorEnd),
+			defaultDebugColor,
 			NewTag(defaultDebugTag),
 			NewFormat(defaultFormat),
 			NewTimeFormat(defaultTimeFormat),
 			defaultOut,
 		),
 		NewTier(
-			NewColor(defaultWarnColor, defaultWarnColorEnd),
+			defaultWarnColor,
 			NewTag(defaultWarnTag),
 			NewFormat(defaultFormat),
 			NewTimeFormat(defaultTimeFormat),
 			defaultOut,
 		),
 		NewTier(
-			NewColor(defaultErrorColor, defaultErrorColorEnd),
+			defaultErrorColor,
 			NewTag(defaultErrorTag),
 			NewFormat(defaultFormat),
 			NewTimeFormat(defaultTimeFormat),
 			defaultOut,
 		),
 		NewTier(
-			NewColor(defaultFatalColor, defaultFatalColorEnd),
+			defaultFatalColor,
 			NewTag(defaultFatalTag),
 			NewFormat(defaultFormat),
 			NewTimeFormat(defaultTimeFormat),

@@ -102,7 +102,7 @@ func (t *Tier) Logf(format string, params ...interface{}) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
-	out := t.GetColor().Get() +
+	out := t.GetColor().Start() +
 		strings.Replace(strings.Replace(strings.Replace(t.GetFormat().Get(),
 			"{TAG}", t.GetTag().Get(), -1),
 			"{TIME}", time.Now().Format(t.GetTimeFormat().Get()), -1),

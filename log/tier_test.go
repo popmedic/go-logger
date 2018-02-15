@@ -5,27 +5,28 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/popmedic/go-color/colorize"
 )
 
 func TestNewTier(t *testing.T) {
-	expColor := NewColor("yellow", "none")
 	expTag := NewTag("TAG")
 	expFormat := NewFormat("{TIME} {TAG}: {MSG}")
 	expTimeFormat := NewTimeFormat("expTimeFormatStr")
 	expWriter := os.Stdout
 
-	res := NewTier(expColor, expTag, expFormat, expTimeFormat, expWriter)
+	res := NewTier(colorize.NewColorize("yellow", "none"), expTag, expFormat, expTimeFormat, expWriter)
 	if res == nil {
 		t.Error("NewTier should not return nil")
 	}
 }
 
 func TestGetSetTier(t *testing.T) {
-	color := NewColor("red", "none")
+	color := colorize.NewColorize("black", "blue")
 	tag := NewTag("TAG")
 	format := NewFormat("{TIME} {TAG}: {MSG}")
 	timeFormat := NewTimeFormat("pqs")
-	expColor := NewColor("yellow", "red")
+	expColor := colorize.NewColorize("yellow", "red")
 	expTag := NewTag("GAG")
 	expFormat := NewFormat("{TIME} {TAG}: {MSG}")
 	expTimeFormat := NewTimeFormat("2006-01-02 15:04:05")
@@ -44,7 +45,7 @@ func TestGetSetTier(t *testing.T) {
 }
 
 func TestTierLog(t *testing.T) {
-	expColor := NewColor("yellow", "none")
+	expColor := colorize.NewColorize("yellow", "none")
 	expTag := NewTag("GAG")
 	expFormat := NewFormat("{TIME} : {TAG} : {MSG}")
 	expTimeFormat := NewTimeFormat("2006-01-02 15:04:05")
@@ -66,6 +67,11 @@ func TestTierLog(t *testing.T) {
 		!strings.HasPrefix(res, "yellow") {
 		t.Errorf("Log: given \"TAG\", \"This is a test 1\\n\x1b[0m\" expected \"This is a test 1\\n\x1b[0m\" got %q", res)
 	}
+}
+
+func compareColor(c1, c2 IColor) bool {
+	return c1.Start() == c2.Start() &&
+		c1.End() == c2.End()
 }
 
 func compareTier(t1, t2 ITier) bool {

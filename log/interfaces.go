@@ -2,6 +2,8 @@ package log
 
 import (
 	"io"
+
+	"github.com/popmedic/go-color/colorize"
 )
 
 type IStringGetter interface {
@@ -18,9 +20,7 @@ type IStringGetSetter interface {
 }
 
 type IColor interface {
-	IStringGetSetter
-	End() string
-	Dup() IColor
+	colorize.IColorize
 }
 
 type ITag interface {

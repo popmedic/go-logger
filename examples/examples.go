@@ -3,8 +3,8 @@ package examples
 import (
 	"os"
 
+	"github.com/popmedic/go-color/colorize/tty"
 	"github.com/popmedic/go-logger/log"
-	"github.com/popmedic/go-logger/log/colors/tty"
 )
 
 // Run1 runs the first example
@@ -24,11 +24,11 @@ func Run1() {
 	log.Error("a", "test")
 	log.Fatal(func(int) {}, "good bye")
 	// Change it up...
-	log.GetDebug().SetColor(log.NewColor(tty.FgMagenta.String(), tty.Reset.String()))
-	log.GetInfo().SetColor(log.NewColor(tty.BgHiBlue.String(), tty.Reset.String()))
-	log.GetWarn().SetColor(log.NewColor(tty.BgYellow.String(), tty.Reset.String()))
-	log.GetError().SetColor(log.NewColor(tty.FgCyan.String(), tty.Reset.String()))
-	log.GetFatal().SetColor(log.NewColor(tty.FgHiGreen.String(), tty.Reset.String()))
+	log.GetDebug().SetColor(tty.FgMagenta())
+	log.GetInfo().SetColor(tty.BgHiBlue().Add(tty.BlinkRapid()))
+	log.GetWarn().SetColor(tty.BgYellow().Add(tty.FgHiBlue(), tty.Underline()))
+	log.GetError().SetColor(tty.FgCyan())
+	log.GetFatal().SetColor(tty.FgHiGreen())
 	log.GetInfo().SetTag(log.NewTag("information"))
 	log.GetDebug().SetTag(log.NewTag("   debug   "))
 	log.GetWarn().SetTag(log.NewTag("  warning  "))
