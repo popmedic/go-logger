@@ -89,7 +89,12 @@ func (t *Tier) SetWriter(writer io.Writer) {
 
 // Log will log a line to writer
 func (t *Tier) Log(msgs ...interface{}) {
-	t.Logf(fmt.Sprint(msgs...))
+	out := ""
+	for _, msg := range msgs {
+		out = fmt.Sprintf("%s %v", out, msg)
+	}
+	out = out[1:]
+	t.Logf(out)
 }
 
 // Logf will log a formated line to writer
