@@ -49,11 +49,11 @@ var (
 )
 
 var (
-	defaultInfoColor  = tty.Reset()
-	defaultDebugColor = tty.FgGreen()
-	defaultWarnColor  = tty.FgYellow()
-	defaultErrorColor = tty.FgRed()
-	defaultFatalColor = tty.BgRed().Add(tty.FgHiWhite())
+	defaultInfoColor  = NewColor(tty.Reset())
+	defaultDebugColor = NewColor(tty.FgGreen())
+	defaultWarnColor  = NewColor(tty.FgYellow())
+	defaultErrorColor = NewColor(tty.FgRed())
+	defaultFatalColor = NewColor(tty.BgRed().Add(tty.FgHiWhite()))
 )
 
 var (

@@ -37,7 +37,7 @@ func (t *Tier) Dup() ITier {
 
 // GetColor Returns the color property of the tier
 func (t *Tier) GetColor() IColor {
-	return t.color.Dup()
+	return t.color.Get()
 }
 
 // SetColor sets the color property of the tier
@@ -102,12 +102,12 @@ func (t *Tier) Logf(format string, params ...interface{}) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
-	out := t.GetColor().Start() +
+	out := t.GetColor().Color(
 		strings.Replace(strings.Replace(strings.Replace(t.GetFormat().Get(),
 			"{TAG}", t.GetTag().Get(), -1),
 			"{TIME}", time.Now().Format(t.GetTimeFormat().Get()), -1),
-			"{MSG}", format, -1) +
-		t.GetColor().End()
+			"{MSG}", format, -1),
+	)
 	if len(params) > 0 {
 		out = fmt.Sprintf(out, params...)
 	}

@@ -15,18 +15,18 @@ func TestNewTier(t *testing.T) {
 	expTimeFormat := NewTimeFormat("expTimeFormatStr")
 	expWriter := os.Stdout
 
-	res := NewTier(colorize.NewColorize("yellow", "none"), expTag, expFormat, expTimeFormat, expWriter)
+	res := NewTier(NewColor(colorize.NewColorize("yellow", "none")), expTag, expFormat, expTimeFormat, expWriter)
 	if res == nil {
 		t.Error("NewTier should not return nil")
 	}
 }
 
 func TestGetSetTier(t *testing.T) {
-	color := colorize.NewColorize("black", "blue")
+	color := NewColor(colorize.NewColorize("black", "blue"))
 	tag := NewTag("TAG")
 	format := NewFormat("{TIME} {TAG}: {MSG}")
 	timeFormat := NewTimeFormat("pqs")
-	expColor := colorize.NewColorize("yellow", "red")
+	expColor := NewColor(colorize.NewColorize("yellow", "red"))
 	expTag := NewTag("GAG")
 	expFormat := NewFormat("{TIME} {TAG}: {MSG}")
 	expTimeFormat := NewTimeFormat("2006-01-02 15:04:05")
@@ -45,7 +45,7 @@ func TestGetSetTier(t *testing.T) {
 }
 
 func TestTierLog(t *testing.T) {
-	expColor := colorize.NewColorize("yellow", "none")
+	expColor := NewColor(colorize.NewColorize("yellow", "none"))
 	expTag := NewTag("GAG")
 	expFormat := NewFormat("{TIME} : {TAG} : {MSG}")
 	expTimeFormat := NewTimeFormat("2006-01-02 15:04:05")
@@ -80,4 +80,16 @@ func compareTier(t1, t2 ITier) bool {
 		compareFormat(t1.GetFormat(), t2.GetFormat()) &&
 		compareTimeFormat(t1.GetTimeFormat(), t2.GetTimeFormat()) &&
 		t1.GetWriter() == t2.GetWriter()
+}
+
+func compareFormat(f1, f2 IFormat) bool {
+	return f1.Get() == f2.Get()
+}
+
+func compareTag(t1, t2 ITag) bool {
+	return t1.Get() == t2.Get()
+}
+
+func compareTimeFormat(f1, f2 ITimeFormat) bool {
+	return f1.Get() == f2.Get()
 }
