@@ -29,21 +29,26 @@ const (
 )
 
 const (
-	defaultFormat     = "{TIME} [{TAG}]> {MSG}"
-	defaultTimeFormat = "2006-01-02 15:04:05"
+	defaultFormatString     = "{TIME} [{TAG}]> {MSG}"
+	defaultTimeFormatString = "2006-01-02 15:04:05"
 )
 
 const (
-	defaultInfoTag  = "INFO"
-	defaultDebugTag = "DEBUG"
-	defaultWarnTag  = "WARN"
-	defaultErrorTag = "ERROR"
-	defaultFatalTag = "FATAL"
+	defaultInfoTagString  = "INFO"
+	defaultDebugTagString = "DEBUG"
+	defaultWarnTagString  = "WARN"
+	defaultErrorTagString = "ERROR"
+	defaultFatalTagString = "FATAL"
 )
 
 var (
 	defaultOut = os.Stdout
 
+	defaultFormat     = NewFormat(defaultFormatString)
+	defaultTimeFormat = NewTimeFormat(defaultTimeFormatString)
+)
+
+var (
 	defaultInfoColor  = tty.Reset()
 	defaultDebugColor = tty.FgGreen()
 	defaultWarnColor  = tty.FgYellow()
@@ -52,43 +57,60 @@ var (
 )
 
 var (
+	defaultInfoTag  = NewTag(defaultInfoTagString)
+	defaultDebugTag = NewTag(defaultDebugTagString)
+	defaultWarnTag  = NewTag(defaultWarnTagString)
+	defaultErrorTag = NewTag(defaultErrorTagString)
+	defaultFatalTag = NewTag(defaultFatalTagString)
+)
+
+var (
+	infoTier = NewTier(
+		defaultInfoColor,
+		defaultInfoTag,
+		defaultFormat,
+		defaultTimeFormat,
+		defaultOut,
+	)
+	debugTier = NewTier(
+		defaultDebugColor,
+		defaultDebugTag,
+		defaultFormat,
+		defaultTimeFormat,
+		defaultOut,
+	)
+	warnTier = NewTier(
+		defaultWarnColor,
+		defaultWarnTag,
+		defaultFormat,
+		defaultTimeFormat,
+		defaultOut,
+	)
+	errorTier = NewTier(
+		defaultErrorColor,
+		defaultErrorTag,
+		defaultFormat,
+		defaultTimeFormat,
+		defaultOut,
+	)
+	fatalTier = NewTier(
+		defaultFatalColor,
+		defaultFatalTag,
+		defaultFormat,
+		defaultTimeFormat,
+		defaultOut,
+	)
+)
+
+var (
 	tiers = []ITier{
-		NewTier(
-			defaultInfoColor,
-			NewTag(defaultInfoTag),
-			NewFormat(defaultFormat),
-			NewTimeFormat(defaultTimeFormat),
-			defaultOut,
-		),
-		NewTier(
-			defaultDebugColor,
-			NewTag(defaultDebugTag),
-			NewFormat(defaultFormat),
-			NewTimeFormat(defaultTimeFormat),
-			defaultOut,
-		),
-		NewTier(
-			defaultWarnColor,
-			NewTag(defaultWarnTag),
-			NewFormat(defaultFormat),
-			NewTimeFormat(defaultTimeFormat),
-			defaultOut,
-		),
-		NewTier(
-			defaultErrorColor,
-			NewTag(defaultErrorTag),
-			NewFormat(defaultFormat),
-			NewTimeFormat(defaultTimeFormat),
-			defaultOut,
-		),
-		NewTier(
-			defaultFatalColor,
-			NewTag(defaultFatalTag),
-			NewFormat(defaultFormat),
-			NewTimeFormat(defaultTimeFormat),
-			defaultOut,
-		),
+		infoTier,
+		debugTier,
+		warnTier,
+		errorTier,
+		fatalTier,
 	}
+
 	lock = sync.RWMutex{}
 )
 
