@@ -11,9 +11,16 @@ type Color struct {
 	lock sync.RWMutex
 }
 
-func NewColor(cz colorize.IColorize) IColor {
+func NewColor(cz ...colorize.IColorize) IColor {
+	if len(cz) == 0 {
+		return NewColor(colorize.NewColorize("", ""))
+	}
+	c := cz[0]
+	for i := 1; i < len(cz); i++ {
+		c.Add(cz[i])
+	}
 	return &Color{
-		cz,
+		c,
 		sync.RWMutex{},
 	}
 }

@@ -26,7 +26,7 @@ func TestGetSetTier(t *testing.T) {
 	tag := NewTag("TAG")
 	format := NewFormat("{TIME} {TAG}: {MSG}")
 	timeFormat := NewTimeFormat("pqs")
-	expColor := NewColor(colorize.NewColorize("yellow", "red"))
+	expColor := NewColor(colorize.NewColorize("yellow", "red"), colorize.NewColorize("", "").Add(NewColor()))
 	expTag := NewTag("GAG")
 	expFormat := NewFormat("{TIME} {TAG}: {MSG}")
 	expTimeFormat := NewTimeFormat("2006-01-02 15:04:05")

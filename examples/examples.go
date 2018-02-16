@@ -24,7 +24,7 @@ func Run1() {
 	log.Error("a", "test")
 	log.Fatal(func(int) {}, "good bye")
 	// Change it up...
-	log.GetInfo().SetColor(log.NewColor(tty.FgHiBlue().Add(tty.Underline())))
+	log.GetInfo().SetColor(log.NewColor(tty.FgHiBlue(), tty.Underline()))
 	log.GetDebug().SetColor(log.NewColor(tty.FgMagenta()))
 	log.GetWarn().SetColor(log.NewColor(tty.BgYellow().Add(tty.FgHiBlue(), tty.Underline())))
 	log.GetError().SetColor(log.NewColor(tty.FgCyan()))
