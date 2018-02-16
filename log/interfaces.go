@@ -21,6 +21,9 @@ type IStringGetSetter interface {
 
 type IColor interface {
 	colorize.IColorize
+	Get() IColor
+	Set(IColor)
+	Dup() IColor
 }
 
 type ITag interface {
