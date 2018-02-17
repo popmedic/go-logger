@@ -15,11 +15,11 @@ func TestNewLogger(t *testing.T) {
 		defaultErrorTag.Get(),
 		defaultFatalTag.Get(),
 	}
-	if res := len(tiers); res != 5 {
+	if res := len(tiers.tiers); res != 5 {
 		t.Errorf("tiers should %d is %d", 5, res)
 	} else {
 		for i, tag := range tags {
-			if res := tiers[i].GetTag().Get(); res != tag {
+			if res := tiers.Get(i).GetTag().Get(); res != tag {
 				t.Errorf("tier %d should have tag %q has %q", i, tag, res)
 			}
 		}
@@ -31,6 +31,7 @@ func TestLoggerOut(t *testing.T) {
 	SetOutput(w)
 	SetFormat("{TIME} <{TAG}>: {MSG}")
 	SetTimeFormat("Mon Jan _2 15:04:05 2006")
+	SetHTMLStatus(true)
 
 	exp := fmt.Sprintf("<%s>: Test %s number %d", defaultInfoTag.Get(), defaultInfoTag.Get(), infoIdx)
 	Info("Test", defaultInfoTag.Get(), "number", infoIdx)
@@ -106,10 +107,43 @@ func TestLoggerOut(t *testing.T) {
 	} else if !exitCalled {
 		t.Error("exit was not called")
 	}
+
+	expStr := `<!DOCTYPE html>
+<html>
+<body style="background-color:Black;">
+<span style="color:White;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <INFO>: Test INFO number 0</span></span></span>
+<br/>
+<span style="color:White;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <INFO>: Test INFO number 0</span></span></span>
+<br/>
+<span style="color:Green;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <DEBUG>: Test DEBUG number 1</span></span></span>
+<br/>
+<span style="color:Green;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <DEBUG>: Test DEBUG number 1</span></span></span>
+<br/>
+<span style="color:Yellow;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <WARN>: Test WARN number 2</span></span></span>
+<br/>
+<span style="color:Yellow;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <WARN>: Test WARN number 2</span></span></span>
+<br/>
+<span style="color:Red;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <ERROR>: Test ERROR number 3</span></span></span>
+<br/>
+<span style="color:Red;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <ERROR>: Test ERROR number 3</span></span></span>
+<br/>
+<span style="background-color:Red;"><span style="color:White;"><span style="font-weight:bold;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <FATAL>: Test FATAL number 4</span></span></span></span>
+<br/>
+<span style="background-color:Red;"><span style="color:White;"><span style="font-weight:bold;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <FATAL>: Test FATAL number 4</span></span></span></span>
+<br/>
+</body>
+</html>`
+	if gotStr := htmlLoggerString(); strings.Compare(gotStr, expStr) == 0 {
+		t.Errorf("expected:\n %s \ngot:\n %s", expStr, gotStr)
+	}
 }
 
-func TestSetFormatFail(t *testing.T) {
-	if err := SetFormat(""); err == nil {
-		t.Errorf("given a bad format string expected error %q", invaledTimeFormatFmt)
+type Tiers []ITier
+
+func (tt Tiers) String() string {
+	out := "["
+	for _, t := range tt {
+		out = fmt.Sprintf("%s %q", out, t.GetTag().Get())
 	}
+	return out + " ]"
 }

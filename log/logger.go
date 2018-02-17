@@ -10,125 +10,66 @@
 package log
 
 import (
-	"fmt"
 	"io"
-	"os"
 	"sync"
-
-	"github.com/popmedic/go-color/colorize/tty"
 )
 
-const invaledTimeFormatFmt = "%q is does not contain needed key words \"{TAG}\", \"{TIME}\", and \"{MSG}\""
+type Logger struct {
+	tiers []ITier
+	lock  sync.RWMutex
+}
 
-const (
-	infoIdx int = iota
-	debugIdx
-	warnIdx
-	errorIdx
-	fatalIdx
-)
-
-const (
-	defaultFormatString     = "{TIME} [{TAG}]> {MSG}"
-	defaultTimeFormatString = "2006-01-02 15:04:05"
-)
-
-const (
-	defaultInfoTagString  = "INFO"
-	defaultDebugTagString = "DEBUG"
-	defaultWarnTagString  = "WARN"
-	defaultErrorTagString = "ERROR"
-	defaultFatalTagString = "FATAL"
-)
-
-var (
-	defaultOut = os.Stdout
-
-	defaultFormat     = NewFormat(defaultFormatString)
-	defaultTimeFormat = NewTimeFormat(defaultTimeFormatString)
-)
-
-var (
-	defaultInfoColor  = NewColor(tty.Reset())
-	defaultDebugColor = NewColor(tty.FgGreen())
-	defaultWarnColor  = NewColor(tty.FgYellow())
-	defaultErrorColor = NewColor(tty.FgRed())
-	defaultFatalColor = NewColor(tty.BgRed().Add(tty.FgHiWhite()))
-)
-
-var (
-	defaultInfoTag  = NewTag(defaultInfoTagString)
-	defaultDebugTag = NewTag(defaultDebugTagString)
-	defaultWarnTag  = NewTag(defaultWarnTagString)
-	defaultErrorTag = NewTag(defaultErrorTagString)
-	defaultFatalTag = NewTag(defaultFatalTagString)
-)
-
-var (
-	infoTier = NewTier(
-		defaultInfoColor,
-		defaultInfoTag,
-		defaultFormat,
-		defaultTimeFormat,
-		defaultOut,
-	)
-	debugTier = NewTier(
-		defaultDebugColor,
-		defaultDebugTag,
-		defaultFormat,
-		defaultTimeFormat,
-		defaultOut,
-	)
-	warnTier = NewTier(
-		defaultWarnColor,
-		defaultWarnTag,
-		defaultFormat,
-		defaultTimeFormat,
-		defaultOut,
-	)
-	errorTier = NewTier(
-		defaultErrorColor,
-		defaultErrorTag,
-		defaultFormat,
-		defaultTimeFormat,
-		defaultOut,
-	)
-	fatalTier = NewTier(
-		defaultFatalColor,
-		defaultFatalTag,
-		defaultFormat,
-		defaultTimeFormat,
-		defaultOut,
-	)
-)
-
-var (
-	tiers = []ITier{
-		infoTier,
-		debugTier,
-		warnTier,
-		errorTier,
-		fatalTier,
+func NewLogger(tiers ...ITier) *Logger {
+	l := &Logger{
+		lock:  sync.RWMutex{},
+		tiers: []ITier{},
 	}
+	return l.Add(tiers...)
+}
 
-	lock = sync.RWMutex{}
-)
+// Add will add a tier to the tail end of the logger
+func (l *Logger) Add(tiers ...ITier) *Logger {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	l.tiers = append(l.tiers, tiers...)
+	return l
+}
+
+// Get will get the tier at index idx, it will return nil if the
+// index is out of bounds.
+func (l *Logger) Get(idx int) ITier {
+	if idx < len(l.tiers) {
+		l.lock.RLock()
+		defer l.lock.RUnlock()
+		return l.tiers[idx]
+	}
+	return nil
+}
 
 // SetOutput sets where the logger will write to
-func SetOutput(out io.Writer) {
-	lock.Lock()
-	defer lock.Unlock()
-	for _, tier := range tiers {
+func (l *Logger) SetOutput(out io.Writer) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	for _, tier := range l.tiers {
 		tier.SetWriter(out)
 	}
 }
 
+func (l *Logger) GetOutput() io.Writer {
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+	if len(l.tiers) > 0 {
+		return l.tiers[0].GetWriter()
+	}
+	return nil
+}
+
 // SetTimeFormat sets the time format for the time stamp on a log line
 // Uses the go standard library timeformat format.
-func SetTimeFormat(format string) {
-	lock.Lock()
-	defer lock.Unlock()
-	for _, tier := range tiers {
+func (l *Logger) SetTimeFormat(format string) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	for _, tier := range l.tiers {
 		tier.SetTimeFormat(NewTimeFormat(format))
 	}
 }
@@ -138,116 +79,16 @@ func SetTimeFormat(format string) {
 // MUST have a {TIME}, {TAG}, {MSG} string inside.
 // For example: `{TIME} [{TAG}]:> {MSG}` will print logs of the form
 // `10-21-1975 13:24:56 ERROR:> this is the message`
-// Returns an error if an error occurs.
-func SetFormat(format string) error {
+// Be careful, this will just do nothing if the format is invalid.
+func (l *Logger) SetFormat(format string) {
 	f := NewFormat(format)
 	if f == nil {
-		return fmt.Errorf(invaledTimeFormatFmt, format)
+		return
 	}
 
-	lock.Lock()
-	defer lock.Unlock()
-	for _, tier := range tiers {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	for _, tier := range l.tiers {
 		tier.SetFormat(f)
 	}
-	return nil
-}
-
-// Get will git the tier at idx
-func Get(idx int) ITier {
-	lock.RLock()
-	defer lock.RUnlock()
-	return tiers[idx]
-}
-
-// GetInfo gets the info tier
-func GetInfo() ITier {
-	return Get(infoIdx)
-}
-
-// Infof prints to output f formatted with values i.
-// Uses the go standard library style format strings.
-// Will add the assigned Info tag and color.
-func Infof(f string, i ...interface{}) {
-	GetInfo().Logf(f, i...)
-}
-
-// Info prints to output values i joined with a space.
-// Will add the assigned Info tag and color.
-func Info(i ...interface{}) {
-	GetInfo().Log(i...)
-}
-
-// GetDebug gets the info tier
-func GetDebug() ITier {
-	return Get(debugIdx)
-}
-
-// Debugf prints to output f formatted with values i.
-// Uses the go standard library style format strings.
-// Will add the assigned Debug tag and color.
-func Debugf(f string, i ...interface{}) {
-	GetDebug().Logf(f, i...)
-}
-
-// Debug prints to output values i joined with a space.
-// Will add the assigned Debug tag and color.
-func Debug(i ...interface{}) {
-	GetDebug().Log(i...)
-}
-
-// GetWarn gets the info tier
-func GetWarn() ITier {
-	return Get(warnIdx)
-}
-
-// Warnf prints to output f formatted with values i.
-// Uses the go standard library style format strings.
-// Will add the assigned Warn tag and color.
-func Warnf(f string, i ...interface{}) {
-	GetWarn().Logf(f, i...)
-}
-
-// Warn prints to output values i joined with a space.
-// Will add the assigned Warn tag and color.
-func Warn(i ...interface{}) {
-	GetWarn().Log(i...)
-}
-
-// GetError gets the info tier
-func GetError() ITier {
-	return Get(errorIdx)
-}
-
-// Errorf prints to output f formatted with values i.
-// Uses the go standard library style format strings.
-// Will add the assigned Error tag and color.
-func Errorf(f string, i ...interface{}) {
-	GetError().Logf(f, i...)
-}
-
-// Error prints to output values i joined with a space.
-// Will add the assigned Error tag and color.
-func Error(i ...interface{}) {
-	GetError().Log(i...)
-}
-
-// GetFatal gets the info tier
-func GetFatal() ITier {
-	return Get(fatalIdx)
-}
-
-// Fatalf prints to output f formatted with values i.
-// Uses the go standard library style format strings.
-// Will add the assigned Fatal tag and color.
-func Fatalf(exit func(int), f string, i ...interface{}) {
-	GetFatal().Logf(f, i...)
-	exit(1)
-}
-
-// Fatal prints to output values i joined with a space.
-// Will add the assigned Fatal tag and color.
-func Fatal(exit func(int), i ...interface{}) {
-	GetFatal().Log(i...)
-	exit(1)
 }

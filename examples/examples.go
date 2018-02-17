@@ -1,7 +1,8 @@
 package examples
 
 import (
-	"os"
+	"math/rand"
+	"time"
 
 	"github.com/popmedic/go-color/colorize/tty"
 	"github.com/popmedic/go-logger/log"
@@ -50,5 +51,33 @@ func Run1() {
 	log.Error("hello,")
 	log.Errorf("this %q", "is")
 	log.Error("a", "test")
-	log.Fatal(os.Exit, "good bye")
+	log.Fatal(func(int) {}, "good bye")
+
+	log.GetInfo().SetTag(log.NewTag("INFO"))
+	log.GetDebug().SetTag(log.NewTag("DBUG"))
+	log.GetWarn().SetTag(log.NewTag("WARN"))
+	log.GetError().SetTag(log.NewTag("EROR"))
+	log.GetFatal().SetTag(log.NewTag("FATL"))
+
+	log.SetFormat("[{TAG}] {TIME} -> {MSG}")
+	log.SetTimeFormat("01-02-2006 15:04:05")
+
+	log.SetHTMLStatus(true)
+	for {
+		rand.Seed(time.Now().Unix())
+		idx := rand.Int()
+		switch idx % 5 {
+		case 0:
+			log.Info("A simple number: ", idx)
+		case 1:
+			log.Debug("A simple number: ", idx)
+		case 2:
+			log.Warn("A simple number: ", idx)
+		case 3:
+			log.Error("A simple number: ", idx)
+		case 4:
+			log.Fatal(func(int) {}, "A simple number: ", idx)
+		}
+		time.Sleep(time.Second)
+	}
 }
