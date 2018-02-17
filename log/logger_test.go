@@ -31,7 +31,6 @@ func TestLoggerOut(t *testing.T) {
 	SetOutput(w)
 	SetFormat("{TIME} <{TAG}>: {MSG}")
 	SetTimeFormat("Mon Jan _2 15:04:05 2006")
-	SetHTMLStatus(true)
 
 	exp := fmt.Sprintf("<%s>: Test %s number %d", defaultInfoTag.Get(), defaultInfoTag.Get(), infoIdx)
 	Info("Test", defaultInfoTag.Get(), "number", infoIdx)
@@ -106,35 +105,6 @@ func TestLoggerOut(t *testing.T) {
 		t.Errorf("expected suffix %s got %s", exp, string(b))
 	} else if !exitCalled {
 		t.Error("exit was not called")
-	}
-
-	expStr := `<!DOCTYPE html>
-<html>
-<body style="background-color:Black;">
-<span style="color:White;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <INFO>: Test INFO number 0</span></span></span>
-<br/>
-<span style="color:White;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <INFO>: Test INFO number 0</span></span></span>
-<br/>
-<span style="color:Green;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <DEBUG>: Test DEBUG number 1</span></span></span>
-<br/>
-<span style="color:Green;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <DEBUG>: Test DEBUG number 1</span></span></span>
-<br/>
-<span style="color:Yellow;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <WARN>: Test WARN number 2</span></span></span>
-<br/>
-<span style="color:Yellow;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <WARN>: Test WARN number 2</span></span></span>
-<br/>
-<span style="color:Red;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <ERROR>: Test ERROR number 3</span></span></span>
-<br/>
-<span style="color:Red;"><span style="background-color:Black;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <ERROR>: Test ERROR number 3</span></span></span>
-<br/>
-<span style="background-color:Red;"><span style="color:White;"><span style="font-weight:bold;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <FATAL>: Test FATAL number 4</span></span></span></span>
-<br/>
-<span style="background-color:Red;"><span style="color:White;"><span style="font-weight:bold;"><span style="font-family:'Consola', monospace;">Fri Feb 16 20:21:50 2018 <FATAL>: Test FATAL number 4</span></span></span></span>
-<br/>
-</body>
-</html>`
-	if gotStr := htmlLoggerString(); strings.Compare(gotStr, expStr) == 0 {
-		t.Errorf("expected:\n %s \ngot:\n %s", expStr, gotStr)
 	}
 }
 

@@ -318,18 +318,23 @@ func Fatal(exit func(int), i ...interface{}) {
 }
 
 func htmlLoggerString() string {
-	o :=
-		`<!DOCTYPE html>
-<html>
-<body style="background-color:Black;">
+	o := `<!DOCTYPE html>
+<html style="background-color:grey;">
+<head>
+<meta http-equiv="refresh" content="5; URL=/here">
+</head>
+<body style="width:80%;margin-left:auto;margin-right:auto;background-color:Black;padding:12px;border-style:solid;border-color:white;border-width:1px;border-radius:4px">
+<h1 style="font-family:'Consola', monospace;font-size:18pt;color:white;">Popmedia Log</h1>
 `
 	if v, ok := htmlTiers.GetOutput().(*linewriter.LineWriter); ok {
 		for _, item := range v.All() {
 			o = o + fmt.Sprint(item) + "<br/>\n"
 		}
+		for n := v.Max() - v.Len(); n > 0; n-- {
+			o = o + "<br/>"
+		}
 	}
-	return o +
-		`</body>
+	return o + `</body>
 </html>`
 }
 
