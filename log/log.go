@@ -184,13 +184,13 @@ func SetFormat(format string) {
 	tiers.SetFormat(format)
 }
 
-func SetHTMLStatus(status bool) {
+func SetHTMLStatus(status bool, addr string) {
 	htmlStatusLock.Lock()
 	defer htmlStatusLock.Unlock()
 	htmlStatus = status
 	if status {
 		var err error
-		htmlCloser, err = listenAndServeWithClose(":6060", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		htmlCloser, err = listenAndServeWithClose(addr, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(htmlLoggerString()))
 		}))
 		if nil != err {

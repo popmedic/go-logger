@@ -52,7 +52,9 @@ func Run1() {
 	log.Errorf("this %q", "is")
 	log.Error("a", "test")
 	log.Fatal(func(int) {}, "good bye")
+}
 
+func Run2() {
 	log.GetInfo().SetTag(log.NewTag("INFO"))
 	log.GetDebug().SetTag(log.NewTag("DBUG"))
 	log.GetWarn().SetTag(log.NewTag("WARN"))
@@ -62,21 +64,21 @@ func Run1() {
 	log.SetFormat("[{TAG}] {TIME} -> {MSG}")
 	log.SetTimeFormat("01-02-2006 15:04:05")
 
-	log.SetHTMLStatus(true)
+	log.SetHTMLStatus(true, ":8180")
 	for {
 		rand.Seed(time.Now().Unix())
 		idx := rand.Int()
 		switch idx % 5 {
 		case 0:
-			log.Info("A simple number: ", idx)
+			log.Info("A info number: ", idx)
 		case 1:
-			log.Debug("A simple number: ", idx)
+			log.Debug("A debug number: ", idx)
 		case 2:
-			log.Warn("A simple number: ", idx)
+			log.Warn("A warn number: ", idx)
 		case 3:
-			log.Error("A simple number: ", idx)
+			log.Error("A error number: ", idx)
 		case 4:
-			log.Fatal(func(int) {}, "A simple number: ", idx)
+			log.Fatal(func(int) {}, "A fatal number: ", idx)
 		}
 		time.Sleep(time.Second)
 	}
