@@ -373,7 +373,7 @@ func listenAndServeWithClose(addr string, handler http.Handler) (io.Closer, erro
 	}
 
 	go func() {
-		err := srv.Serve(listener.(*net.TCPListener))
+		err := srv.Serve(listener)
 		if err != nil {
 			log(errorIdx, "UNABLE TO ACTIVATE HTML LOGGER: HTTP Server Error - ", err)
 		}
