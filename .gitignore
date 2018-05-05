@@ -88,3 +88,4 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/go,intellij+all,visualstudiocode
 examples/bin
+coverage.txt

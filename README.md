@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/popmedic/go-logger.svg?branch=master)](https://travis-ci.org/popmedic/go-logger)
+[![codecov](https://codecov.io/gh/popmedic/go-logger/branch/master/graph/badge.svg)](https://codecov.io/gh/popmedic/go-logger)
+
 # log
 
 Package log provides a thread safe multi-tiered logger used to log output to a io.Writer.
