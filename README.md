@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/popmedic/go-logger.svg?branch=master)](https://travis-ci.org/popmedic/go-logger)
 [![codecov](https://codecov.io/gh/popmedic/go-logger/branch/master/graph/badge.svg)](https://codecov.io/gh/popmedic/go-logger)
 
-# log
+# github.com/popmedic/go-logger/log
 
 Package log provides a thread safe multi-tiered logger used to log output to a io.Writer.
 The different tiers are (least to highest piority):
@@ -16,7 +16,13 @@ One can set the output, output format, and output time format. One can also set 
 
 Convenience functions are given to print a line or formated line to log for each tier.
 
-Example
+## install
+
+```
+go get github.com/popmedic/go-logger/log/...
+```
+
+## example
 
 ``` golang
 
